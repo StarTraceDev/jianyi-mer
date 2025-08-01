@@ -3,29 +3,34 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 10:58:15
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-07-31 17:35:28
+ * @LastEditTime: 2025-08-01 10:26:58
 -->
 <template>
-  <div ref="container"></div>
-  <div class="login bg-none bg-repeat" :style="{ backgroundImage: `url(${fULLImg})` }
-    ">
-    <div class="login-shade w-full h-full flex items-center justify-center">
-      <div class="w-[670px] flex bg-white z-999">
-        <div class="w-[268px]">123123</div>
-        <div class="w-[384px] px-[40px] ">
-          <div></div>
-          <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto">
-            <el-form-item prop="name">
-              <el-input :prefix-icon="User" v-model="ruleForm.name" placeholder="管理员" />
-            </el-form-item>
-            <el-form-item prop="password">
-              <el-input v-model="ruleForm.password" :prefix-icon="Lock" type="password" placeholder="密码"
-                show-password />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm(ruleFormRef)"> Create </el-button>
-            </el-form-item>
-          </el-form>
+  <div v-loading="loading" element-loading-background="#fff" element-loading-text="加载中..."
+    style="width: 100vw; height: 100vh">
+    <div ref="container"></div>
+    <div v-if="!loading" class="login bg-none bg-repeat" :style="{ backgroundImage: `url(${backgroundImage})` }">
+      <div class="login-shade w-full h-full flex items-center justify-center">
+        <div class="w-[670px] flex bg-white z-999 rounded-md">
+          <div class="w-[268px]">
+            <img :src="leftLogo">
+          </div>
+          <div class="w-[384px] px-[40px]">
+            <div class="flex justify-center pt-[50px]">
+              <img :src="loginLogo" class="size-[100px]">
+            </div>
+            <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto">
+              <el-form-item prop="account">
+                <el-input :prefix-icon="User" v-model="ruleForm.account" placeholder="管理员" />
+              </el-form-item>
+              <el-form-item prop="pwd">
+                <el-input v-model="ruleForm.pwd" :prefix-icon="Lock" type="password" placeholder="密码" show-password />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitForm(ruleFormRef)"> 确定 </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
       </div>
     </div>
@@ -37,52 +42,34 @@ import CanvasNest from './components/canvas-nest'
 import { login } from '@/api/login'
 import { User, Lock } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
+import type { BackdropImg, RuleForm } from './components/index'
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 
-const container = ref<HTMLElement | null>(null)
-let canvasNest: CanvasNest | null = null
-
-interface BackdropImg {
-  backgroundImage: string
-  leftLogo: string
-  loginLogo: string
-  siteName: string
-}
+const loading = ref<boolean>(true)
 const backdropImg = ref<BackdropImg>()
 
-// 获取登录图
+// 获取登录页背景
 const loginBkgImg = async () => {
   const { data } = await login.getLoginPicApi()
+  loading.value = false
   backdropImg.value = data as BackdropImg
 }
-// 背景图
-const fULLImg = computed((): string | undefined => {
-  if (backdropImg.value) {
-    const { backgroundImage } = backdropImg.value
-    return backgroundImage
-  }
-  return '' // 替换图路径
-})
 
-// Logo
-const fULLImg1 = computed((): string | undefined => {
-  if (backdropImg.value) {
-    const { leftLogo } = backdropImg.value
-    return leftLogo
-  }
-  return '' // 替换图路径
-})
+/**
+ * 创建图像计算属性
+ * @param {keyof BackdropImg} key - 检索背景对象的键
+ * @param {string} [fallback=''] - 无效图像时使用的默认图像
+ * @returns {ComputedRef<string>} - 图像的计算属性
+ */
+const createImageGetter = (key: keyof BackdropImg, fallback = '') => computed<string>(() => backdropImg.value?.[key] || fallback)
 
-// Logo
-const fULLImg2 = computed((): string | undefined => {
-  if (backdropImg.value) {
-    const { loginLogo } = backdropImg.value
-    return loginLogo
-  }
-  return '' // 替换图路径
-})
+const leftLogo = createImageGetter('leftLogo');
+const backgroundImage = createImageGetter('backgroundImage');
+const loginLogo = createImageGetter('loginLogo');
 
-console.log(fULLImg);
+// 画布
+const container = ref<HTMLElement | null>(null)
+let canvasNest: CanvasNest | null = null
 
 onMounted(() => {
   if (container.value) {
@@ -94,31 +81,28 @@ onMounted(() => {
     })
   }
 })
+
 onBeforeUnmount(() => {
   if (canvasNest) {
     canvasNest.destroy()
   }
 })
+
 defineOptions({
   name: 'LoginIndex',
 })
 
 loginBkgImg()
 
-interface RuleForm {
-  name: string
-  password: string
-}
-
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  name: '',
-  password: '',
+  account: '',
+  pwd: '',
 })
 
 const rules = reactive<FormRules<RuleForm>>({
-  name: [{ required: true, message: '请输入管理员', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  account: [{ required: true, message: '请输入管理员', trigger: 'blur' }],
+  pwd: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
