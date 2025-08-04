@@ -20,7 +20,7 @@ const staticRoutes: AppRouteRecordRaw[] = [
   },
   {
     path: '/',
-    redirect: '/home/backgroundawait'  // 添加根路径重定向
+    redirect: '/home'  // 添加根路径重定向
   }
 ]
 

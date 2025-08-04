@@ -1,9 +1,9 @@
 /*
- * @Description: 当前页面描述
+ * @Description: token、动态路由存储
  * @Author: StarTraceDev
  * @Date: 2025-08-01 13:27:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 10:14:45
+ * @LastEditTime: 2025-08-04 17:53:28
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -26,9 +26,9 @@ export const useAuthStore = defineStore('auth', () => {
   // 获取路由数据并转换
   const fetchRoutes = async () => {
     const res = await routesApi.getRoutes()
-    menuRoutes.value = res.data as RouteMenu[]
-    console.log(generateRoutes(res.data as RouteMenu[]));
-
+    const data = res.data as RouteMenu[]
+    menuRoutes.value = data
+    localStorage.setItem("tagNaveListJavaMer", JSON.stringify(data[0]) as string);
     return generateRoutes(res.data as RouteMenu[])
   }
 
@@ -55,6 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
           route.redirect = route.children[0].path
         }
       }
+      console.log(route);
 
       return route
     })
