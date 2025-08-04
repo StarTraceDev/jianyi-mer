@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 13:27:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 17:53:28
+ * @LastEditTime: 2025-08-04 22:09:06
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -55,7 +55,6 @@ export const useAuthStore = defineStore('auth', () => {
           route.redirect = route.children[0].path
         }
       }
-      console.log(route);
 
       return route
     })

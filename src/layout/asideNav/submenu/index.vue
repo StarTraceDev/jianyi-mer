@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 16:59:44
+ * @LastEditTime: 2025-08-04 23:32:46
 -->
 <template>
   <div>
@@ -53,6 +53,8 @@ const activeItem = ref<RouteMenu | null>(null);
 
 // 处理菜单选择
 const handleMenuSelect = (path: string) => {
+  console.log('handleMenuSelect', path);
+
   activeMenu.value = path;
   for (const firstLevel of props.subNavigation.children || []) {
     if (firstLevel.path === path) {
@@ -69,6 +71,8 @@ const handleMenuSelect = (path: string) => {
 };
 
 watch(() => props.subNavigation, (newValue) => {
+  console.log(newValue.children[0].path);
+  // handleMenuSelect(newValue.children[0].path);
   activeMenu.value = getFirstLeafPath(newValue)
 });
 

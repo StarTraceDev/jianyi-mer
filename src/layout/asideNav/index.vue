@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 17:42:11
+ * @LastEditTime: 2025-08-04 23:08:09
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen">
@@ -21,35 +21,26 @@
 
 <script setup lang='ts'>
 import SubMenu from './submenu/index.vue'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { HomeFilled, List } from '@element-plus/icons-vue'
+import { List } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import { ref, onMounted } from 'vue'
 import type { RouteMenu } from '@/types/routers'
-
 
 const authStore = useAuthStore()
 const activeId = ref<number>(0)
 const subNavigation = ref<RouteMenu>()
 
-console.log(authStore.menuRoutes);
-
 onMounted(() => {
-  console.log(123);
-
   const data = JSON.parse(localStorage.getItem('tagNaveListJavaMer') as string)
-  console.log(data);
-  activeId.value = data.id
-  // if (authStore.menuRoutes.length > 0) {
-  //   activeId.value = authStore.menuRoutes[0].id;
-  // }
+  if (data && data.id) {
+    targetNavigation(data)
+    activeId.value = data.id
+  }
 });
-console.log();
 
 const targetNavigation = (item: RouteMenu) => {
   subNavigation.value = item
   activeId.value = item.id
-  console.log(item.id, item);
 }
 
 
