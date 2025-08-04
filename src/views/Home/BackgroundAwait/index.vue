@@ -2,18 +2,16 @@
 <!--
  * @Description: 当前页面描述
  * @Author: StarTraceDev
- * @Date: 2025-08-01 17:37:42
+ * @Date: 2025-08-04 09:53:11
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 10:24:57
+ * @LastEditTime: 2025-08-04 09:53:15
 -->
 <template>
-  <div>123</div>
-  <!-- <router-view /> -->
+  <div>数据统计</div>
 </template>
 
 <script setup lang='ts'>
 // import { ref, reactive } from 'vue'
-// import { RouterView } from 'vue-router'
 
 </script>
 

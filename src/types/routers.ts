@@ -1,9 +1,9 @@
 /*
- * @Description: 当前页面描述
+ * @Description: 路由类型
  * @Author: StarTraceDev
  * @Date: 2025-08-01 14:05:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-01 17:35:35
+ * @LastEditTime: 2025-08-04 10:16:31
  */
 
 import type { Component } from "vue"
@@ -23,6 +23,7 @@ export interface RouteMenu {
 
 // 路由配置类型
 export interface AppRouteRecordRaw {
+  redirect: string
   path: string
   name?: string
   component?: Component
