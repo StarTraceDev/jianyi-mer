@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 10:58:15
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-01 10:26:58
+ * @LastEditTime: 2025-08-01 17:39:10
 -->
 <template>
   <div v-loading="loading" element-loading-background="#fff" element-loading-text="加载中..."
@@ -39,18 +39,24 @@
 
 <script setup lang="ts">
 import CanvasNest from './components/canvas-nest'
-import { login } from '@/api/login'
+import { loginApi } from '@/api/login'
 import { User, Lock } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+// import { useAuthStore } from '@/stores/authStore'
+import { setToken } from '@/utils/auth'
+// import { fetchDynamicRoutes } from '@/router'
 import type { FormInstance, FormRules } from 'element-plus'
-import type { BackdropImg, RuleForm } from './components/index'
+import type { BackdropImg, RuleForm, LoginResponse } from './components/index'
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 
+const router = useRouter()
+// const authStore = useAuthStore()
 const loading = ref<boolean>(true)
 const backdropImg = ref<BackdropImg>()
 
 // 获取登录页背景
 const loginBkgImg = async () => {
-  const { data } = await login.getLoginPicApi()
+  const { data } = await loginApi.getLoginPicApi()
   loading.value = false
   backdropImg.value = data as BackdropImg
 }
@@ -96,8 +102,8 @@ loginBkgImg()
 
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  account: '',
-  pwd: '',
+  account: 'shijianxiaopu',
+  pwd: '000000',
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -107,9 +113,18 @@ const rules = reactive<FormRules<RuleForm>>({
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
-      console.log('submit!')
+      const response = await loginApi.login(ruleForm)
+      const { code, data } = response as LoginResponse;
+      if (code === 200) {
+        setToken(data.token)
+        // authStore.setToken(data.token)
+        // await authStore.fetchAdminInfo()
+        // const routes = await fetchDynamicRoutes()
+        // authStore.setDynamicRoutes(routes)
+        router.push('/home');
+      }
     } else {
       console.log('error submit!', fields)
     }

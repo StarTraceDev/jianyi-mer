@@ -3,10 +3,11 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 10:05:49
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-07-31 13:04:09
+ * @LastEditTime: 2025-08-01 16:50:18
  */
 import axios, { AxiosHeaders } from 'axios'
 import { ElMessage } from 'element-plus'
+import { useAuthStore } from '@/stores/authStore'
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -14,7 +15,6 @@ import type {
   RawAxiosRequestHeaders,
   Method,
 } from 'axios'
-
 
 // 定义响应数据结构
 interface ApiResponse<T = unknown> {
@@ -34,8 +34,6 @@ interface RequestConfig extends AxiosRequestConfig {
 
 class Request {
   private instance: AxiosInstance
-  // private baseURL: string = import.meta.env.VITE_API_BASE + '/api/admin/merchant/';
-  // private baseURL: string = 'http://192.168.110.175:20800/api/admin/merchant/';
   private baseURL: string = '/api/';
   private isRefreshing = false;
   private refreshSubscribers: ((token: string) => void)[] = []; // 刷新 token 期间的请求队列
@@ -52,7 +50,8 @@ class Request {
     // 请求拦截器 - 添加 token
     this.instance.interceptors.request.use(
       (config: import('axios').InternalAxiosRequestConfig) => {
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+        const authStore = useAuthStore()
+        const token = authStore.token
         if (token) {
           config.headers = config.headers || {}
           // 使用 AxiosHeaders 设置头部
@@ -60,8 +59,12 @@ class Request {
           Object.entries(config.headers).forEach(([key, value]) => {
             headers.set(key, value)
           })
-          headers.set('Authorization', `Bearer ${token}`)
+          headers.set('authori-zation', `${token}`)
           config.headers = headers
+          if (config.method === 'get') {
+            config.params = config.params || {};
+            config.params.temp = config.params.temp = Math.floor(Date.now() / 1000);
+          }
         }
         return config
       },
@@ -79,7 +82,7 @@ class Request {
           return res
         } else {
           // 处理业务错误
-          return Promise.reject(new Error(res.message || '请求失败'))
+          return ElMessage.error(res.message);
         }
       },
       (error) => {
@@ -88,7 +91,7 @@ class Request {
         if (error.response) {
           switch (error.response.status) {
             case 401:
-              ElMessage.error('Oops, this is a error message.')
+              ElMessage.error(message);
               message = '未授权，请重新登录'
               // 这里可以添加跳转到登录页的逻辑
               break
