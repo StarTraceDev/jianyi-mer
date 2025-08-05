@@ -4,17 +4,19 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 14:09:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 14:26:55
+ * @LastEditTime: 2025-08-05 17:00:23
 -->
 <template>
   <div class="common-layout">
     <el-container>
       <el-aside width="260px" class="flex">
-        <AsideNav />
+        <MainMenu />
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
-        <el-main>
+        <el-header>
+          <MainNav />
+        </el-header>
+        <el-main class="bg-[#f0f2f5]">
           <RouterView />
         </el-main>
       </el-container>
@@ -23,7 +25,8 @@
 </template>
 
 <script setup lang='ts'>
-import AsideNav from './asideNav/index.vue'
+import MainMenu from './mainMenu/index.vue'
+import MainNav from './mainNav/index.vue'
 // import { ref, reactive } from 'vue'
 import { RouterView } from 'vue-router'
 
@@ -32,5 +35,9 @@ import { RouterView } from 'vue-router'
 <style lang='scss' scoped>
 .common-layout {
   height: 100vh;
+}
+
+.el-header {
+  --el-header-padding: 0 0px;
 }
 </style>

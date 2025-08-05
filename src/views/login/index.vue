@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 10:58:15
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 21:58:01
+ * @LastEditTime: 2025-08-05 13:30:04
 -->
 <template>
   <div v-loading="loading" element-loading-background="#fff" element-loading-text="加载中..."
@@ -118,6 +118,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       const { code, data } = response as LoginResponse;
       if (code === 200) {
         authStore.loginSuccess(data.token)
+        authStore.fetchUserInfo()
         const redirect = router.currentRoute.value.query.redirect as string || '/'
         router.push(redirect)
       }

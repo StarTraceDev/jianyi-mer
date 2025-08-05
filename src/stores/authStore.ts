@@ -3,18 +3,21 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 13:27:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 22:09:06
+ * @LastEditTime: 2025-08-05 14:15:02
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import Cookies from 'js-cookie'
 import { dynamicRoutes } from '@/router/dynamicRoutes'
 import type { AppRouteRecordRaw, RouteMenu } from '@/types/routers'
+import type { userStateInfo } from '@/types/stores'
 import { routesApi } from '@/api/auth'
+import { loginApi } from '@/api/login'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(Cookies.get('token') || null)
   const menuRoutes = ref<RouteMenu[]>([])
+  const userInfo = ref<object>({})
 
   // 登录成功后调用
   const loginSuccess = (tkn: string) => {
@@ -28,7 +31,9 @@ export const useAuthStore = defineStore('auth', () => {
     const res = await routesApi.getRoutes()
     const data = res.data as RouteMenu[]
     menuRoutes.value = data
-    localStorage.setItem("tagNaveListJavaMer", JSON.stringify(data[0]) as string);
+    if (localStorage.getItem('tagNaveListJavaMer') != null) {
+      JSON.parse(localStorage.getItem('tagNaveListJavaMer') as string)
+    }
     return generateRoutes(res.data as RouteMenu[])
   }
 
@@ -55,9 +60,15 @@ export const useAuthStore = defineStore('auth', () => {
           route.redirect = route.children[0].path
         }
       }
-
       return route
     })
+  }
+
+  // 获取用户信息
+  const fetchUserInfo = async () => {
+    const res = await loginApi.getAdminInfo()
+    userInfo.value = res.data as userStateInfo
+    return res
   }
 
   // 退出登录
@@ -69,8 +80,10 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     token,
     menuRoutes,
+    userInfo,
     loginSuccess,
     fetchRoutes,
-    logout
+    logout,
+    fetchUserInfo
   }
 })

@@ -1,17 +1,17 @@
 <!--
- * @Description: 当前页面描述
+ * @Description: 左侧子菜单
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 23:32:46
+ * @LastEditTime: 2025-08-05 15:55:20
 -->
 <template>
   <div>
     <div class="h-[50px] flex items-center justify-around fw-500 border-b border-r border-[#ebeef5]">{{
       subNavigation.title }}
     </div>
-    <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" router="true" mode="vertical"
-      @select="handleMenuSelect">
+    <el-menu :default-active="activeMenu" :unique-opened="true" :router="true" mode="vertical"
+      @select="handleMenuSelect" class="el-menu-vertical-demo">
       <!-- 直接从第一级的children开始循环 -->
       <template v-for="firstLevel in props.subNavigation.children" :key="firstLevel.id">
         <!-- 有二级菜单的情况 -->
@@ -37,6 +37,7 @@
 
 <script setup lang='ts'>
 import { ref, defineProps, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import type { RouteMenu } from '@/types/routers'
 
 const props = defineProps({
@@ -53,8 +54,6 @@ const activeItem = ref<RouteMenu | null>(null);
 
 // 处理菜单选择
 const handleMenuSelect = (path: string) => {
-  console.log('handleMenuSelect', path);
-
   activeMenu.value = path;
   for (const firstLevel of props.subNavigation.children || []) {
     if (firstLevel.path === path) {
@@ -70,10 +69,13 @@ const handleMenuSelect = (path: string) => {
   }
 };
 
+const router = useRouter();
+
 watch(() => props.subNavigation, (newValue) => {
-  console.log(newValue.children[0].path);
-  // handleMenuSelect(newValue.children[0].path);
-  activeMenu.value = getFirstLeafPath(newValue)
+  const firstLevel = getFirstLeafPath(newValue);
+
+  activeMenu.value = firstLevel;
+  router.push(firstLevel);
 });
 
 // 获取第一个叶子节点的路径
