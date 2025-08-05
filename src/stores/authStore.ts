@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 13:27:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 14:15:02
+ * @LastEditTime: 2025-08-05 23:14:00
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -86,4 +86,11 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     fetchUserInfo
   }
-})
+},
+{ persist: [ // 持久化配置
+  {
+    pick: ['userInfo'],
+    storage: localStorage,
+  },
+]}
+)

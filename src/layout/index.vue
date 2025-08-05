@@ -4,7 +4,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 14:09:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 17:00:23
+ * @LastEditTime: 2025-08-05 23:20:51
 -->
 <template>
   <div class="common-layout">
@@ -13,7 +13,7 @@
         <MainMenu />
       </el-aside>
       <el-container>
-        <el-header>
+        <el-header height="84px">
           <MainNav />
         </el-header>
         <el-main class="bg-[#f0f2f5]">

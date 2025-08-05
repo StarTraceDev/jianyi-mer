@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:47:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 17:48:44
+ * @LastEditTime: 2025-08-05 23:31:16
 -->
 <template>
   <div class="flex items-center justify-between h-[50px] border-b border-[#ebeef5]">
@@ -19,6 +19,7 @@
     </div>
     <div class="flex items-center">
       <el-icon class="icon">
+        <!-- screenfull -->
         <RefreshRight />
       </el-icon>
 
@@ -28,9 +29,11 @@
       <div class="icon bg-[#4073FA] py-[3px] px-[8px] text-white rounded-[10px] text-[12px]">商城</div>
     </div>
   </div>
+  <TabNav />
 </template>
 
 <script setup lang='ts'>
+import TabNav from '../tagNav/index.vue';
 import { RefreshRight, FullScreen, Fold } from '@element-plus/icons-vue'
 // import { ref, reactive } from 'vue'
 
