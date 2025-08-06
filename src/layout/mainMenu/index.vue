@@ -3,11 +3,11 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 16:58:57
+ * @LastEditTime: 2025-08-06 15:09:45
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen m-[5px] border-b border-[#ebeef5]">
-    <div class="flex justify-center">
+    <div class="py-[5px] flex justify-center">
       <img :src="userLogo" alt="" class="size-[50px]">
     </div>
     <div class="menu-container" :class="{ 'bg-[#4073fa]': activeId === item.id }" v-for="(item, index) in menuRoutes"
@@ -15,7 +15,7 @@
       <el-icon :class="item.icon">
         <List />
       </el-icon>
-      <div>{{ item.title }}</div>
+      <div class="text-[13px]">{{ item.title }}</div>
     </div>
   </div>
   <SubMenu :sub-navigation="subNavigation" />

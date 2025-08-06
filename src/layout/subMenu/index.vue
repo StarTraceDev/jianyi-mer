@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 15:55:20
+ * @LastEditTime: 2025-08-06 17:17:09
 -->
 <template>
   <div>
@@ -38,7 +38,10 @@
 <script setup lang='ts'>
 import { ref, defineProps, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useTabsStore } from '@/stores/tabsStore'
 import type { RouteMenu } from '@/types/routers'
+
+const tabsStore = useTabsStore()
 
 const props = defineProps({
   subNavigation: {
@@ -57,11 +60,15 @@ const handleMenuSelect = (path: string) => {
   activeMenu.value = path;
   for (const firstLevel of props.subNavigation.children || []) {
     if (firstLevel.path === path) {
+      const { path, title } = firstLevel;
+      tabsStore.addTabData({ path, title });
       activeItem.value = firstLevel;
       return;
     }
     for (const secondLevel of firstLevel.children || []) {
       if (secondLevel.path === path) {
+        const { path, title } = secondLevel;
+        tabsStore.addTabData({ path, title });
         activeItem.value = secondLevel;
         return;
       }
@@ -72,10 +79,10 @@ const handleMenuSelect = (path: string) => {
 const router = useRouter();
 
 watch(() => props.subNavigation, (newValue) => {
-  const firstLevel = getFirstLeafPath(newValue);
-
-  activeMenu.value = firstLevel;
-  router.push(firstLevel);
+  const { path, title } = getFirstLeafPath(newValue);
+  tabsStore.addTabData({ path, title });
+  activeMenu.value = path;
+  router.push(path);
 });
 
 // 获取第一个叶子节点的路径
@@ -83,7 +90,7 @@ const getFirstLeafPath = (item: RouteMenu) => {
   if (item.children && item.children.length > 0) {
     return getFirstLeafPath(item.children[0]);
   }
-  return item.path;
+  return { path: item.path, title: item.title }
 }
 
 defineOptions({ name: 'LayoutAsideNavSubmenu' })

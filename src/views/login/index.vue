@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 10:58:15
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 13:30:04
+ * @LastEditTime: 2025-08-06 09:34:13
 -->
 <template>
   <div v-loading="loading" element-loading-background="#fff" element-loading-text="加载中..."
@@ -90,10 +90,6 @@ onBeforeUnmount(() => {
   }
 })
 
-defineOptions({
-  name: 'LoginIndex',
-})
-
 loginBkgImg()
 
 // 登录
@@ -127,6 +123,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   })
 }
+defineOptions({
+  name: 'LoginIndex',
+})
 </script>
 
 <style lang="scss" scoped>

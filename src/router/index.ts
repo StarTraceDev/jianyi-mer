@@ -4,7 +4,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 08:52:13
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 22:38:39
+ * @LastEditTime: 2025-08-06 09:26:43
  */
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw, RouteRecordName } from 'vue-router'
@@ -39,14 +39,14 @@ const router = createRouter({
 export const addRoutes = (routes: AppRouteRecordRaw[]) => {
   const layoutRouteName: RouteRecordName = 'LayoutRoot'
   // 临时保存 404 路由
-  const notFoundRoute = router.getRoutes().find(r  => r.path  === '/:pathMatch(.*)*')
+  const notFoundRoute = router.getRoutes().find(r => r.path === '/:pathMatch(.*)*')
 
   // 移除旧的动态路由（除了登录页和 Layout）
-  router.getRoutes().forEach(route  => {
+  router.getRoutes().forEach(route => {
     if (
-      route.name  &&
-      route.name  !== 'Login' &&
-      route.name  !== layoutRouteName &&
+      route.name &&
+      route.name !== 'Login' &&
+      route.name !== layoutRouteName &&
       !route.path.startsWith('/login')
     ) {
       router.removeRoute(route.name)
@@ -54,16 +54,16 @@ export const addRoutes = (routes: AppRouteRecordRaw[]) => {
   })
 
   // 将新路由添加到 Layout 的 children 中
-  routes.forEach(route  => {
-    if (!router.hasRoute(route.name!))  {
-      router.addRoute(layoutRouteName,  route as RouteRecordRaw)
+  routes.forEach(route => {
+    if (!router.hasRoute(route.name!)) {
+      router.addRoute(layoutRouteName, route as RouteRecordRaw)
     }
 
     // 如果有子路由，也添加进去
-    if (route.children?.length)  {
-      route.children.forEach(child  => {
-        if (!router.hasRoute(child.name!))  {
-          router.addRoute(route.name!,  child as RouteRecordRaw)
+    if (route.children?.length) {
+      route.children.forEach(child => {
+        if (!router.hasRoute(child.name!)) {
+          router.addRoute(route.name!, child as RouteRecordRaw)
         }
       })
     }
@@ -76,24 +76,24 @@ export const addRoutes = (routes: AppRouteRecordRaw[]) => {
       name: 'NotFound',
       component: () => import('@/views/Error/404.vue')
     })
-  } else if (!router.hasRoute('NotFound'))  {
+  } else if (!router.hasRoute('NotFound')) {
     router.addRoute(notFoundRoute)
   }
 }
 
 // 导航守卫
-router.beforeEach(async  (to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const isLogin = !!authStore.token
 
   // 处理根路径
-  if (to.path  === '/') {
+  if (to.path === '/') {
     next(isLogin ? '/home' : '/login')
     return
   }
 
   // 登录页判断
-  if (to.path  === '/login') {
+  if (to.path === '/login') {
     isLogin ? next('/home') : next()
     return
   }
@@ -105,7 +105,7 @@ router.beforeEach(async  (to, from, next) => {
   }
 
   // 首次登录加载动态路由
-  if (isLogin && authStore.menuRoutes.length  === 0) {
+  if (isLogin && authStore.menuRoutes.length === 0) {
     try {
       const routes = await authStore.fetchRoutes()
       addRoutes(routes)
