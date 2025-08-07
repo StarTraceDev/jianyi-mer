@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 14:05:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-04 10:16:31
+ * @LastEditTime: 2025-08-07 11:13:35
  */
 
 import type { Component } from "vue"
@@ -18,7 +18,7 @@ export interface RouteMenu {
   path: string
   menuType: 'M' | 'C' // M:目录 C:菜单
   sort: number
-  children: RouteMenu[]
+  children: RouteMenu[],
 }
 
 // 路由配置类型

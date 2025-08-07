@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 13:27:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 23:14:00
+ * @LastEditTime: 2025-08-07 13:32:20
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -19,14 +19,18 @@ export const useAuthStore = defineStore('auth', () => {
   const menuRoutes = ref<RouteMenu[]>([])
   const userInfo = ref<object>({})
 
-  // 登录成功后调用
+  /**
+   * 登录成功后的token存储
+   */
   const loginSuccess = (tkn: string) => {
     token.value = tkn
     // 存储到Cookie (有效期7天)
     Cookies.set('token', tkn, { expires: 7 })
   }
 
-  // 获取路由数据并转换
+  /**
+   * 获取动态路由 - 递归
+   */
   const fetchRoutes = async () => {
     const res = await routesApi.getRoutes()
     const data = res.data as RouteMenu[]
@@ -37,7 +41,9 @@ export const useAuthStore = defineStore('auth', () => {
     return generateRoutes(res.data as RouteMenu[])
   }
 
-  // 转换路由数据结构
+  /**
+   * 递归生成路由
+   */
   const generateRoutes = (menus: RouteMenu[]): AppRouteRecordRaw[] => {
     return menus.map(menu => {
       const route: AppRouteRecordRaw = {
@@ -64,7 +70,9 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  // 获取用户信息
+  /**
+   * 获取用户信息
+   */
   const fetchUserInfo = async () => {
     const res = await loginApi.getAdminInfo()
     userInfo.value = res.data as userStateInfo
@@ -87,10 +95,12 @@ export const useAuthStore = defineStore('auth', () => {
     fetchUserInfo
   }
 },
-{ persist: [ // 持久化配置
   {
-    pick: ['userInfo'],
-    storage: localStorage,
-  },
-]}
+    persist: [ // 持久化配置
+      {
+        pick: ['userInfo'],
+        storage: localStorage,
+      },
+    ]
+  }
 )

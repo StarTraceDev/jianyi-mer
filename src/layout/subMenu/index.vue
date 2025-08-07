@@ -3,15 +3,15 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-06 17:17:09
+ * @LastEditTime: 2025-08-07 17:23:54
 -->
 <template>
   <div>
     <div class="h-[50px] flex items-center justify-around fw-500 border-b border-r border-[#ebeef5]">{{
       subNavigation.title }}
     </div>
-    <el-menu :default-active="activeMenu" :unique-opened="true" :router="true" mode="vertical"
-      @select="handleMenuSelect" class="el-menu-vertical-demo">
+    <el-menu :default-active="activeMenu" :unique-opened="true" :collapse="props.collapseNav" :router="true"
+      mode="vertical" @select="handleMenuSelect" class="el-menu-vertical-demo">
       <!-- 直接从第一级的children开始循环 -->
       <template v-for="firstLevel in props.subNavigation.children" :key="firstLevel.id">
         <!-- 有二级菜单的情况 -->
@@ -47,6 +47,10 @@ const props = defineProps({
   subNavigation: {
     type: Object as () => RouteMenu,
     default: () => ({})
+  },
+  collapseNav: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -55,9 +59,13 @@ const activeMenu = ref<string>('');
 // 当前激活的菜单项
 const activeItem = ref<RouteMenu | null>(null);
 
-// 处理菜单选择
+/**
+ * 设置当前激活的菜单项
+ * @param path - 菜单项路径
+ */
 const handleMenuSelect = (path: string) => {
   activeMenu.value = path;
+  tabsStore.setActiveTab(path)
   for (const firstLevel of props.subNavigation.children || []) {
     if (firstLevel.path === path) {
       const { path, title } = firstLevel;
@@ -77,22 +85,47 @@ const handleMenuSelect = (path: string) => {
 };
 
 const router = useRouter();
-
+/**
+ * 监听子导航变化,添加新的标签页
+ * @param newValue - 新的子导航数据
+ */
 watch(() => props.subNavigation, (newValue) => {
-  const { path, title } = getFirstLeafPath(newValue);
+  const { path, title } = getFirstLeafPath(newValue) as { path: string; title: string };
   tabsStore.addTabData({ path, title });
   activeMenu.value = path;
   router.push(path);
 });
 
-// 获取第一个叶子节点的路径
+/**
+ * 监听当前激活的标签页,跳转到对应的路由
+ * @param newValue - 新的激活的标签页路径
+ */
+watch(() => tabsStore.activeTab, (newValue) => {
+  activeMenu.value = newValue;
+  router.push(newValue);
+})
+
+/**
+ * 获取第一个叶子节点的路径和标题
+ * @param item - 菜单项数据
+ * @returns 第一个叶子节点路径和标题
+ */
 const getFirstLeafPath = (item: RouteMenu) => {
-  if (item.children && item.children.length > 0) {
+  const { activeTab, tabsList, manualClose, setActiveTab } = tabsStore
+
+  if (activeTab && !manualClose) {
+    tabsStore.manualClose = false
+    return tabsList.find(item => item.path === activeTab)
+  }
+  if (item.children && item.children.length > 0 && manualClose) {
+    setTimeout(() => {
+      tabsStore.manualClose = false
+    }, 100);
     return getFirstLeafPath(item.children[0]);
   }
+  setActiveTab(item.path)
   return { path: item.path, title: item.title }
 }
-
 defineOptions({ name: 'LayoutAsideNavSubmenu' })
 </script>
 
