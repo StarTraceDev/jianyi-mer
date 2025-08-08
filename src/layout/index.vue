@@ -4,12 +4,12 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 14:09:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-07 17:28:16
+ * @LastEditTime: 2025-08-08 16:15:43
 -->
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside :width="widthNav + 'px'" class="flex">
+      <el-aside :width="widthNav + 'px'" class="flex" v-if="dynamic">
         <MainMenu :closeNav="closeNav" />
       </el-aside>
       <el-container>
@@ -28,7 +28,8 @@
 import MainMenu from './mainMenu/index.vue'
 import MainNav from './mainNav/index.vue'
 import { RouterView } from 'vue-router'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useWindowResize } from '@/utils/useWindowResize'
 
 const widthNav = ref<number>(260)
 const closeNav = ref<boolean>()
@@ -40,6 +41,18 @@ const closeNavigation = (value: boolean) => {
   widthNav.value = value ? 80 : 260
   closeNav.value = value
 }
+
+/**
+ * 响应式布局
+ * @returns {boolean} - 是否为动态布局
+ * @returns {Ref<number>} - 窗口宽度
+ */
+const { width } = useWindowResize()
+const dynamic = ref<boolean>(true)
+
+watch(width, (newWidth) => {
+  dynamic.value = newWidth >= 1000;
+}, { immediate: true });
 </script>
 
 <style lang='scss' scoped>

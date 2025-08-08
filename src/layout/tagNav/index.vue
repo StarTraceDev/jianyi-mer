@@ -3,13 +3,14 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-07 15:31:16
+ * @LastEditTime: 2025-08-08 13:08:41
 -->
 <template>
   <div class="flex h-[34px] items-center">
     <el-icon>
       <ArrowLeft />
     </el-icon>
+    <!-- <el-scrollbar> -->
     <div class="flex gap-2 w-[95%] h-full overflow-hidden px-[10px]">
       <el-tag v-for="tag in tabsList" :key="tag.path" :closable="isClosable(tag.path)" :disable-transitions="true"
         :checked="true" @close="handleClose(tag)" @click="tabsStore.setActiveTab(tag.path)" :class="{
@@ -18,12 +19,23 @@
         {{ tag.title }}
       </el-tag>
     </div>
+    <!-- </el-scrollbar> -->
+
     <el-icon>
       <ArrowRight />
     </el-icon>
-    <el-icon class="text-[#4073FA]" style="margin: 0 10px;">
-      <Menu />
-    </el-icon>
+    <el-dropdown>
+      <el-icon color="#4073FA" class="el-icon--right">
+        <Menu />
+      </el-icon>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item>Action 1</el-dropdown-item>
+          <el-dropdown-item>Action 2</el-dropdown-item>
+          <el-dropdown-item>Action 3</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 </template>
 

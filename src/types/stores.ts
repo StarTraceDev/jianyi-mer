@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 14:11:00
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 14:13:19
+ * @LastEditTime: 2025-08-08 10:26:24
  */
 export interface userStateInfo {
   id: number,
@@ -27,5 +27,4 @@ export interface userStateInfo {
   rectangleLogo: string,
   localFlag: boolean,
   token?: string | null
-
 }

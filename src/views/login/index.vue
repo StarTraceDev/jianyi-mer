@@ -3,16 +3,16 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 10:58:15
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-06 09:34:13
+ * @LastEditTime: 2025-08-08 16:13:13
 -->
 <template>
   <div v-loading="loading" element-loading-background="#fff" element-loading-text="加载中..."
     style="width: 100vw; height: 100vh">
     <div ref="container"></div>
     <div v-if="!loading" class="login bg-none bg-repeat" :style="{ backgroundImage: `url(${backgroundImage})` }">
-      <div class="login-shade w-full h-full flex items-center justify-center">
-        <div class="w-[670px] flex bg-white z-999 rounded-md">
-          <div class="w-[268px]">
+      <div class="w-full h-full flex items-center justify-center" :class="{ 'login-shade': dynamic }">
+        <div class="h-[374px] flex bg-white z-999 rounded-md">
+          <div class="w-[268px]" v-if="dynamic">
             <img :src="leftLogo">
           </div>
           <div class="w-[384px] px-[40px]">
@@ -43,9 +43,10 @@ import { loginApi } from '@/api/login'
 import { User, Lock } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import { useWindowResize } from '@/utils/useWindowResize'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { BackdropImg, RuleForm, LoginResponse } from './components/index'
-import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, watch, computed, onMounted, onBeforeUnmount } from 'vue'
 
 // 获取登录页背景
 const loading = ref<boolean>(true)
@@ -83,6 +84,18 @@ onMounted(() => {
     })
   }
 })
+
+/**
+ * 响应式布局
+ * @returns {boolean} - 是否为动态布局
+ * @returns {Ref<number>} - 窗口宽度
+ */
+const { width } = useWindowResize()
+const dynamic = ref<boolean>(true)
+
+watch(width, (newWidth) => {
+  dynamic.value = newWidth >= 770;
+}, { immediate: true });
 
 onBeforeUnmount(() => {
   if (canvasNest) {

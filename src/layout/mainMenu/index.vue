@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-07 17:23:38
+ * @LastEditTime: 2025-08-08 17:46:45
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen m-[5px] border-b border-[#ebeef5]">
@@ -11,7 +11,7 @@
       <img :src="userLogo" alt="" class="size-[50px]">
     </div>
     <div class="menu-container" :class="{ 'bg-[#4073fa]': activeId === item.id }" v-for="(item, index) in menuRoutes"
-      :key="index + '-' + item.id" @click="targetNavigation(item, 'manual')">
+      :key="index + '-' + item.id" @click="targetNavigation(item, index, 'manual')">
       <el-icon :class="item.icon">
         <List />
       </el-icon>
@@ -62,7 +62,7 @@ onMounted(() => {
   initializeActiveMenu()
 });
 
-const targetNavigation = (item: RouteMenu, type?: string) => {
+const targetNavigation = (item: RouteMenu, index?: number, type?: string) => {
   if (type === 'manual') {
     tabsStore.manualClose = true
   }
@@ -142,7 +142,7 @@ defineOptions({ name: 'LayoutAsideNav' })
   @apply flex items-center justify-center h-[50px];
   transition: .3s ease-in-out;
   display: flex;
-  min-width: 85px;
+  min-width: 80px;
 }
 
 /* Vue过渡类 */
