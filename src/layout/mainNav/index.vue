@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:47:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-08 10:37:56
+ * @LastEditTime: 2025-08-14 09:02:35
 -->
 <template>
   <div class="flex items-center justify-between h-[50px] border-b border-[#ebeef5]">
@@ -13,18 +13,22 @@
       </el-icon>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item v-for="item in breadcrumbTitle" :key="item">{{ item }}</el-breadcrumb-item>
-        <!-- :to="{ path: '/' }" -->
       </el-breadcrumb>
     </div>
     <div class="flex items-center">
-      <el-icon class="icon">
-        <!-- screenfull -->
-        <RefreshRight />
-      </el-icon>
-      <el-icon class="icon">
-        <FullScreen />
-      </el-icon>
-      <div class="icon bg-[#4073FA] py-[3px] px-[8px] text-white rounded-[10px] text-[12px]">商城</div>
+      <div class="features-icon">
+        <el-icon>
+          <RefreshRight />
+        </el-icon>
+      </div>
+      <div class="features-icon" @click="toggleFullScreen">
+        <el-icon>
+          <component :is="fullScreenIcon" />
+        </el-icon>
+      </div>
+      <div class="platform">
+        <div class="bg-[#4073FA] py-[3px] px-[8px] text-white rounded-[10px] text-[12px]">商城</div>
+      </div>
       <el-dropdown :hide-on-click="false">
         <span class="el-dropdown-link">
           {{ shopTitle }}
@@ -46,8 +50,9 @@
 </template>
 
 <script setup lang='ts'>
+import screenfull from 'screenfull'
 import TabNav from '../tagNav/index.vue';
-import { RefreshRight, FullScreen, Fold, Expand, ArrowDown } from '@element-plus/icons-vue'
+import { RefreshRight, FullScreen, Fold, Expand, ArrowDown, Crop } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useTabsStore } from '@/stores/tabsStore'
 import type { RouteMenu } from '@/types/routers'
@@ -107,6 +112,26 @@ const foldCick = () => {
   emit('foldClick', isCollapse.value)
   isCollapse.value = !isCollapse.value
 }
+
+/**
+ * 切换全屏
+ */
+const isFullScreen = ref<boolean>(false)
+const fullScreenIcon = computed(() => {
+  return isFullScreen.value ? Crop : FullScreen
+})
+interface CustomScreenfull extends Omit<typeof screenfull, 'isEnabled'> {
+  isEnabled: boolean;
+}
+const customScreenfull = screenfull as CustomScreenfull;
+const toggleFullScreen = (): void => {
+  if (!customScreenfull.isEnabled) {
+    return;
+  }
+  isFullScreen.value = !isFullScreen.value
+  customScreenfull.toggle();
+};
+
 /**
  * 退出登录
  */
@@ -123,8 +148,42 @@ defineOptions({ name: 'MainNav' })
 }
 
 .icon {
-  margin: 0 10px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+
+    i {
+      display: inline-block;
+      animation: logoAnimation 0.3s ease-in-out;
+    }
+  }
 }
+
+@mixin nav-mask {
+  height: 50px;
+  line-height: 50px;
+  padding: 0 10px;
+  display: inline-block;
+}
+
+.features-icon {
+  @include nav-mask;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+
+    el-icon {
+      display: inline-block;
+      animation: logoAnimation 0.3s ease-in-out;
+    }
+  }
+}
+
+.platform {
+  padding: 0 10px;
+}
+
+
 
 .example-showcase .el-dropdown-link {
   cursor: pointer;

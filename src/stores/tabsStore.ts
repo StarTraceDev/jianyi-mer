@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-06 13:22:29
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-07 15:03:19
+ * @LastEditTime: 2025-08-14 17:52:42
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -38,7 +38,21 @@ export const useTabsStore = defineStore('tabs', () => {
   const setActiveTab = (path: string) => {
     activeTab.value = path
   }
-  return { tabsList, activeTab, manualClose, addTabData, removeTabData, setActiveTab }
+  /**
+   * 除第一个标签与激活的标签页外关闭所有标签页
+   */
+  const closeOtherTabs = () => {
+    tabsList.value.filter((item) => item.path === activeTab.value || item.path === '/home/backgroundawait')
+    manualClose.value = true
+  }
+  /**
+   * 全部关闭标签页
+   */
+  const closeAllTabs = () => {
+    tabsList.value.splice(1, tabsList.value.length - 1)
+    activeTab.value = tabsList.value[tabsList.value.length - 1].path
+  }
+  return { tabsList, activeTab, manualClose, addTabData, removeTabData, setActiveTab, closeAllTabs, closeOtherTabs }
 }, {
   persist: true
 })

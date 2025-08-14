@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-08 13:08:41
+ * @LastEditTime: 2025-08-14 17:53:16
 -->
 <template>
   <div class="flex h-[34px] items-center">
@@ -30,9 +30,12 @@
       </el-icon>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>Action 1</el-dropdown-item>
-          <el-dropdown-item>Action 2</el-dropdown-item>
-          <el-dropdown-item>Action 3</el-dropdown-item>
+          <el-dropdown-item v-for="item in menuOptions" :key="item.action" @click="handleMenuClick(item.action)">
+            <el-icon>
+              <component :is="item.icon" />
+            </el-icon>
+            {{ item.label }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -40,9 +43,9 @@
 </template>
 
 <script setup lang='ts'>
-import { ArrowLeft, ArrowRight, Menu } from '@element-plus/icons-vue'
+import { Menu, Close, ArrowLeft, ArrowRight, CircleClose, RefreshRight, FolderDelete } from '@element-plus/icons-vue'
 import { useTabsStore } from '@/stores/tabsStore'
-import { computed } from 'vue'
+import { computed, type Component } from 'vue'
 
 const tabsStore = useTabsStore()
 
@@ -60,6 +63,46 @@ const handleClose = (tag: { path: string; title: string }) => {
 const isClosable = (path: string): boolean => {
   return path !== '/home/backgroundawait'
 }
+
+interface MenuOptions {
+  icon: Component
+  label: string
+  action: Action
+}
+type Action = 'refresh' | 'close' | 'closeOthers' | 'closeAll'
+
+// 菜单
+const menuOptions: MenuOptions[] = [
+  { icon: RefreshRight, label: '刷新', action: 'refresh' },
+  { icon: Close, label: '关闭', action: 'close' },
+  { icon: CircleClose, label: '关闭其他', action: 'closeOthers' },
+  { icon: FolderDelete, label: '全部关闭', action: 'closeAll' },
+]
+
+/**
+ * 菜单点击
+ * @param action 操作
+ */
+const handleMenuClick = (action: Action) => {
+  switch (action) {
+    case 'refresh':
+      console.log('刷新')
+      break
+    case 'close':
+      tabsStore.removeTabData(tabsStore.activeTab)
+      break
+    case 'closeOthers':
+      console.log('关闭其他')
+      // tabsStore.activeTab
+      tabsStore.closeOtherTabs()
+      break
+    case 'closeAll':
+      console.log('全部关闭')
+      tabsStore.closeAllTabs()
+      break
+  }
+}
+
 defineOptions({ name: 'TagNav' })
 </script>
 

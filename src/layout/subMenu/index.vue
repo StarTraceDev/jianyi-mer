@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-07 17:23:54
+ * @LastEditTime: 2025-08-14 16:58:38
 -->
 <template>
   <div>
@@ -112,12 +112,11 @@ watch(() => tabsStore.activeTab, (newValue) => {
  */
 const getFirstLeafPath = (item: RouteMenu) => {
   const { activeTab, tabsList, manualClose, setActiveTab } = tabsStore
-
   if (activeTab && !manualClose) {
     tabsStore.manualClose = false
     return tabsList.find(item => item.path === activeTab)
   }
-  if (item.children && item.children.length > 0 && manualClose) {
+  if (item.children && item.children.length > 0) {
     setTimeout(() => {
       tabsStore.manualClose = false
     }, 100);

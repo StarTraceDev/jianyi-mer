@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 13:27:42
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-08 14:47:53
+ * @LastEditTime: 2025-08-14 17:12:16
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -34,6 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
   const fetchRoutes = async () => {
     const res = await routesApi.getRoutes()
     const data = res.data as RouteMenu[]
+
     menuRoutes.value = data
     if (localStorage.getItem('tagNaveListJavaMer') != null) {
       JSON.parse(localStorage.getItem('tagNaveListJavaMer') as string)
@@ -82,10 +83,10 @@ export const useAuthStore = defineStore('auth', () => {
   // 退出登录
   const logout = () => {
     token.value = null
+    userInfo.value = {}
     Cookies.remove('token')
-    // localStorage.clear();
+    localStorage.clear();
     window.location.reload();
-    // router.push('/login')
   }
 
   return {
