@@ -3,19 +3,22 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-08 17:46:45
+ * @LastEditTime: 2025-08-15 17:57:13
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen m-[5px] border-b border-[#ebeef5]">
     <div class="py-[5px] flex justify-center">
       <img :src="userLogo" alt="" class="size-[50px]">
     </div>
-    <div class="menu-container" :class="{ 'bg-[#4073fa]': activeId === item.id }" v-for="(item, index) in menuRoutes"
-      :key="index + '-' + item.id" @click="targetNavigation(item, index, 'manual')">
-      <el-icon :class="item.icon">
-        <List />
-      </el-icon>
-      <div class="text-[13px]">{{ item.title }}</div>
+    <div class="containers">
+      <div class="item" v-for="(item, index) in menuRoutes" :key="index + '-' + item.id"
+        :class="{ 'active': activeIndex === index }" @click="targetNavigation(item, index, 'manual')">
+        <el-icon :class="item.icon">
+          <List />
+        </el-icon>
+        <div class="text-[13px]">{{ item.title }}</div>
+      </div>
+      <div class="active-indicator" :style="indicatorStyle"></div>
     </div>
   </div>
   <Transition name="slide">
@@ -28,7 +31,7 @@ import SubMenu from '../subMenu/index.vue'
 import { List } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useTabsStore } from '@/stores/tabsStore'
-import { ref, onMounted, computed, watch, defineProps } from 'vue'
+import { ref, reactive, onMounted, computed, watch, defineProps } from 'vue'
 import type { RouteMenu } from '@/types/routers'
 import type { userStateInfo } from '@/types/stores'
 
@@ -50,6 +53,26 @@ const userLogo = computed(() => {
   return info?.rectangleLogo || ''
 })
 
+const activeIndex = ref(0);
+const indicatorStyle = reactive({
+  width: '0px',
+  top: '0px'
+});
+// 计算指示器位置
+const updateIndicatorPosition = () => {
+  const activeElement = document.querySelector('.item.active') as HTMLElement;
+  if (activeElement) {
+    indicatorStyle.width = `${activeElement.clientWidth}px`;
+    indicatorStyle.top = `${activeElement.offsetTop}px`;
+  }
+};
+
+const selectItem = (index: number) => {
+  activeIndex.value = index;
+  updateIndicatorPosition();
+};
+
+
 // 监听 activeTab 变化
 watch(() => tabsStore.activeTab, (newValue: string) => {
   const topLevelItem = findTopLevelMenu(authStore.menuRoutes, newValue);
@@ -60,12 +83,14 @@ watch(() => tabsStore.activeTab, (newValue: string) => {
 
 onMounted(() => {
   initializeActiveMenu()
+  updateIndicatorPosition();
 });
 
 const targetNavigation = (item: RouteMenu, index?: number, type?: string) => {
   if (type === 'manual') {
     tabsStore.manualClose = true
   }
+  selectItem(index || 0)
   storeNavigation(item)
   setActiveNavigation(item)
 }
@@ -75,6 +100,8 @@ const targetNavigation = (item: RouteMenu, index?: number, type?: string) => {
  */
 const initializeActiveMenu = () => {
   const storedData = getStoredNavigation()
+  console.log(storedData);
+  selectItem(7)
   if (storedData?.id) {
     setActiveNavigation(storedData)
   } else if (menuRoutes.value.length > 0) {
@@ -138,24 +165,34 @@ defineOptions({ name: 'LayoutAsideNav' })
 </script>
 
 <style scoped>
-.menu-container {
+.containers {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item {
   @apply flex items-center justify-center h-[50px];
   transition: .3s ease-in-out;
   display: flex;
   min-width: 80px;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s;
 }
 
-/* Vue过渡类 */
-.slide-enter-active,
-.slide-leave-active {
-  transition: width 0.2s ease;
-  width: 160px;
-  overflow: hidden;
+.item.active {
+  color: #ffffff;
 }
 
-.slide-enter-from,
-.slide-leave-to {
-  width: 0;
-  transition: width 0.2s ease;
+.active-indicator {
+  background: #4073fa;
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  transition: all 0.3s ease;
+  z-index: 0;
 }
 </style>

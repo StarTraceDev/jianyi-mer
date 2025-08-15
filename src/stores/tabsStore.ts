@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-06 13:22:29
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-14 17:52:42
+ * @LastEditTime: 2025-08-15 08:42:55
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -52,7 +52,16 @@ export const useTabsStore = defineStore('tabs', () => {
     tabsList.value.splice(1, tabsList.value.length - 1)
     activeTab.value = tabsList.value[tabsList.value.length - 1].path
   }
-  return { tabsList, activeTab, manualClose, addTabData, removeTabData, setActiveTab, closeAllTabs, closeOtherTabs }
+  return {
+    tabsList,
+    activeTab,
+    manualClose,
+    addTabData,
+    removeTabData,
+    setActiveTab,
+    closeAllTabs,
+    closeOtherTabs
+  }
 }, {
   persist: true
 })

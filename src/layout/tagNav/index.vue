@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-14 17:53:16
+ * @LastEditTime: 2025-08-15 08:42:03
 -->
 <template>
   <div class="flex h-[34px] items-center">
@@ -97,7 +97,6 @@ const handleMenuClick = (action: Action) => {
       tabsStore.closeOtherTabs()
       break
     case 'closeAll':
-      console.log('全部关闭')
       tabsStore.closeAllTabs()
       break
   }
