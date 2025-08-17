@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-15 17:57:13
+ * @LastEditTime: 2025-08-17 21:45:21
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen m-[5px] border-b border-[#ebeef5]">
@@ -11,8 +11,13 @@
       <img :src="userLogo" alt="" class="size-[50px]">
     </div>
     <div class="containers">
-      <div class="item" v-for="(item, index) in menuRoutes" :key="index + '-' + item.id"
-        :class="{ 'active': activeIndex === index }" @click="targetNavigation(item, index, 'manual')">
+      <div class="item"
+        v-for="(item, index) in menuRoutes"
+        :key="index + '-' + item.id"
+        :class="{ 'active': activeIndex === index }"
+        :ref="(el) => setItemRef(el, index)"
+        @click="targetNavigation(item, index, 'manual')"
+      >
         <el-icon :class="item.icon">
           <List />
         </el-icon>
@@ -32,6 +37,7 @@ import { List } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useTabsStore } from '@/stores/tabsStore'
 import { ref, reactive, onMounted, computed, watch, defineProps } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import type { RouteMenu } from '@/types/routers'
 import type { userStateInfo } from '@/types/stores'
 
@@ -46,6 +52,7 @@ const props = defineProps({
     default: false
   }
 })
+
 // 计算属性
 const menuRoutes = computed(() => authStore.menuRoutes as RouteMenu[])
 const userLogo = computed(() => {
@@ -53,17 +60,25 @@ const userLogo = computed(() => {
   return info?.rectangleLogo || ''
 })
 
+ /**
+  * 设置菜单项的引用
+  * @param el - 元素引用
+  * @param index - 元素索引
+  */
+const itemRefs = ref<HTMLElement[]>([]);
+const setItemRef = (el: Element | ComponentPublicInstance | null, index: number) => {
+  if (el instanceof HTMLElement) {
+    itemRefs.value[index] = el;
+  }
+};
 const activeIndex = ref(0);
-const indicatorStyle = reactive({
-  width: '0px',
-  top: '0px'
-});
+const indicatorStyle = reactive({ width: '0px', top: '0px' });
 // 计算指示器位置
 const updateIndicatorPosition = () => {
-  const activeElement = document.querySelector('.item.active') as HTMLElement;
+  const activeElement = itemRefs.value[activeIndex.value];
   if (activeElement) {
-    indicatorStyle.width = `${activeElement.clientWidth}px`;
-    indicatorStyle.top = `${activeElement.offsetTop}px`;
+    indicatorStyle.width  = `${activeElement.clientWidth}px`;
+    indicatorStyle.top  = `${activeElement.offsetTop}px`;
   }
 };
 
@@ -72,36 +87,54 @@ const selectItem = (index: number) => {
   updateIndicatorPosition();
 };
 
-
 // 监听 activeTab 变化
 watch(() => tabsStore.activeTab, (newValue: string) => {
+  selectItem(findTopLevelIndex(menuRoutes.value, newValue));
   const topLevelItem = findTopLevelMenu(authStore.menuRoutes, newValue);
   if (topLevelItem) {
     targetNavigation(topLevelItem);
   }
 })
 
+/**
+ * 查找顶级菜单索引
+ * @param menus 菜单数组
+ * @param targetPath 目标路径
+ * @returns 顶级菜单索引
+ */
+const findTopLevelIndex = (menus: RouteMenu[], targetPath: string): number => {
+  const hasPath = (menu: RouteMenu): boolean =>
+    menu.path  === targetPath ||
+    !!menu.children?.some(child  => hasPath(child));
+  return menus.findIndex(topMenu  => hasPath(topMenu));
+};
+
 onMounted(() => {
   initializeActiveMenu()
   updateIndicatorPosition();
 });
 
+/**
+ * 导航到指定菜单项
+ * @param item 菜单项数据
+ * @param index 菜单项索引
+ * @param type 导航类型（手动或自动）
+ */
 const targetNavigation = (item: RouteMenu, index?: number, type?: string) => {
   if (type === 'manual') {
     tabsStore.manualClose = true
   }
-  selectItem(index || 0)
+  if(index !== undefined) {
+    selectItem(index)
+  }
   storeNavigation(item)
   setActiveNavigation(item)
 }
 
-/**
- * 初始化选中菜单项
- */
+// 初始化选中菜单项
 const initializeActiveMenu = () => {
   const storedData = getStoredNavigation()
-  console.log(storedData);
-  selectItem(7)
+  selectItem(findTopLevelIndex(menuRoutes.value, storedData?.path ?? ''))
   if (storedData?.id) {
     setActiveNavigation(storedData)
   } else if (menuRoutes.value.length > 0) {
@@ -192,7 +225,7 @@ defineOptions({ name: 'LayoutAsideNav' })
   position: absolute;
   bottom: 0;
   height: 50px;
-  transition: all 0.3s ease;
+  transition: .3s ease-in-out;
   z-index: 0;
 }
 </style>
