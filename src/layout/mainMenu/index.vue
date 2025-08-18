@@ -58,7 +58,7 @@ const indicatorStyle = reactive({
   width: '0px',
   top: '0px'
 });
-// 计算指示器位置
+
 const updateIndicatorPosition = () => {
   const activeElement = document.querySelector('.item.active') as HTMLElement;
   if (activeElement) {
