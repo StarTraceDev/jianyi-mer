@@ -1,12 +1,11 @@
 /*
- * @Description: 当前页面描述
+ * @Description: 主入口
  * @Author: StarTraceDev
  * @Date: 2025-08-04 20:43:26
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-05 22:41:01
+ * @LastEditTime: 2025-09-01 16:03:36
  */
 import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'

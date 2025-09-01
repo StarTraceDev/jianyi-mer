@@ -3,11 +3,11 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-14 16:58:38
+ * @LastEditTime: 2025-09-01 17:02:05
 -->
 <template>
-  <div>
-    <div class="h-[50px] flex items-center justify-around fw-500 border-b border-r border-[#ebeef5]">{{
+  <div class="sub-menu">
+    <div class="h-[50px] flex items-center justify-around font-bold border-b border-r border-[#ebeef5]">{{
       subNavigation.title }}
     </div>
     <el-menu :default-active="activeMenu" :unique-opened="true" :collapse="props.collapseNav" :router="true"
@@ -129,6 +129,19 @@ defineOptions({ name: 'LayoutAsideNavSubmenu' })
 </script>
 
 <style lang='scss' scoped>
+.sub-menu {
+  transition: width 0.3s ease;
+  box-shadow: 1px 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+::v-deep .el-menu {
+  border-right: none;
+}
+
+::v-deep .el-menu-item {
+  height: 50px;
+}
+
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 180px;
   height: calc(100vh - 50px);

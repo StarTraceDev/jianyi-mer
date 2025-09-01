@@ -3,23 +3,23 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-15 08:42:03
+ * @LastEditTime: 2025-09-01 17:36:19
 -->
 <template>
   <div class="flex h-[34px] items-center">
     <el-icon>
       <ArrowLeft />
     </el-icon>
-    <!-- <el-scrollbar> -->
-    <div class="flex gap-2 w-[95%] h-full overflow-hidden px-[10px]">
-      <el-tag v-for="tag in tabsList" :key="tag.path" :closable="isClosable(tag.path)" :disable-transitions="true"
-        :checked="true" @close="handleClose(tag)" @click="tabsStore.setActiveTab(tag.path)" :class="{
-          'active-tag': tabsStore.activeTab === tag.path
-        }" class="public-tag">
-        {{ tag.title }}
-      </el-tag>
-    </div>
-    <!-- </el-scrollbar> -->
+    <el-scrollbar :noresize="true" :always="true" class="h-full w-[95%]">
+      <div class="flex gap-2 h-full px-[10px]" @mousewheel.prevent>
+        <el-tag v-for="tag in tabsList" :key="tag.path" :closable="isClosable(tag.path)" :disable-transitions="true"
+          :checked="true" @close="handleClose(tag)" @click="tabsStore.setActiveTab(tag.path)" :class="{
+            'active-tag': tabsStore.activeTab === tag.path
+          }" class="public-tag">
+          {{ tag.title }}
+        </el-tag>
+      </div>
+    </el-scrollbar>
 
     <el-icon>
       <ArrowRight />
@@ -128,24 +128,16 @@ $mask-position: right bottom, left bottom, center top;
   z-index: 999;
 }
 
-::v-deep .el-tag__close {
-  color: black !important;
-}
-
-::v-deep .el-tag .el-tag__close:hover {
-  background-color: transparent !important;
-  color: inherit !important;
-}
 
 .public-tag {
   position: relative;
-  bottom: -5px;
+  // bottom: -5px;
   height: 30px;
   padding: 0 30px;
   border-width: 15px 27px 15px;
   border-style: solid;
   border-color: transparent;
-  margin: 0 -15px;
+  margin: 5px -15px 0 -15px;
   --el-tag-bg-color: #ffffff !important;
   border: none !important;
   color: black;
@@ -157,5 +149,26 @@ $mask-position: right bottom, left bottom, center top;
 
 ::v-deep .el-tag:hover {
   @include tag-mask;
+}
+
+:deep(.el-tag__close) {
+  color: black !important;
+}
+
+:deep(.el-tag .el-tag__close:hover) {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+:deep(.el-scrollbar__bar.is-horizontal) {
+  height: 0 !important;
+}
+
+:deep(.el-scrollbar__bar.is-vertical) {
+  width: 0 !important;
+}
+
+:deep(.el-scrollbar__wrap) {
+  overflow-x: hidden !important;
 }
 </style>

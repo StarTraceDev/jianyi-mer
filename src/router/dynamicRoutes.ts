@@ -3,9 +3,10 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-01 17:37:14
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-11 09:23:51
+ * @LastEditTime: 2025-09-01 15:14:06
  */
 import type { Component } from 'vue'
+import { homeRoutes } from './modules/home'
 import { orderRoutes } from './modules/order'
 import { serviceRoutes } from './modules/service'
 import { vipRoutes } from './modules/vip'
@@ -13,8 +14,8 @@ import { gridRoutes } from './modules/grid'
 import { operationRoutes } from './modules/operation'
 
 export const dynamicRoutes: Record<string, Component> = {
-  '/home/backgroundawait': () => import('@/views/home/BackgroundAwait/index.vue'),
-  '/home/datastatistics': () => import('@/views/home/DataStatistics/index.vue'),
+  // 首页
+  ...homeRoutes,
   // 订单
   ...orderRoutes,
   // 客服

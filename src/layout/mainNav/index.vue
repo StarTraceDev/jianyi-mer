@@ -3,12 +3,12 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:47:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-08-14 09:02:35
+ * @LastEditTime: 2025-09-01 16:59:36
 -->
 <template>
   <div class="flex items-center justify-between h-[50px] border-b border-[#ebeef5]">
     <div class="flex items-center">
-      <el-icon :size="18" class="icons" @click="foldCick">
+      <el-icon :size="18" class="icons cursor-pointer" @click="foldCick">
         <component :is="currentIcon" />
       </el-icon>
       <el-breadcrumb separator="/">
@@ -148,7 +148,6 @@ defineOptions({ name: 'MainNav' })
 }
 
 .icon {
-
   &:hover {
     background: rgba(0, 0, 0, 0.04);
 
@@ -182,8 +181,6 @@ defineOptions({ name: 'MainNav' })
 .platform {
   padding: 0 10px;
 }
-
-
 
 .example-showcase .el-dropdown-link {
   cursor: pointer;

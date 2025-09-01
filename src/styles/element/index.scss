@@ -1,0 +1,45 @@
+// src/styles/element/index.scss
+/* 只需重写您需要的变量 */
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #4a6cf7,
+      // 更改主色调
+    ),
+    'success': (
+      'base': #1e9e41,
+    ),
+    'warning': (
+      'base': #ff9900,
+    ),
+    'danger': (
+      'base': #f34141,
+    ),
+    'error': (
+      'base': #f34141,
+    ),
+    'info': (
+      'base': #909399,
+    ),
+  ),
+
+  // 除了颜色，您还可以覆盖其他变量
+  $button: (
+      'border-radius': 6px,
+    ),
+
+  // 字体大小变量
+  $font-size: (
+      'extra-small': 12px,
+      'small': 13px,
+      'base': 14px,
+      'medium': 16px,
+      'large': 18px,
+      'extra-large': 20px,
+    )
+);
+// // 如果还需要额外自定义样式，可以在这里添加
+// // 例如自定义组件样式
+// .custom-element-class {
+//   // 您的自定义样式
+// }
