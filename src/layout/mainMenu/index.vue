@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-02 13:36:22
+ * @LastEditTime: 2025-09-02 13:54:30
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen m-[5px] border-b border-[#ebeef5]">
@@ -29,10 +29,10 @@
 
 <script setup lang='ts'>
 import SubMenu from '../subMenu/index.vue'
-import { Grid, HomeFilled, List, PhoneFilled, Present, Tools, TrendCharts, UserFilled } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useTabsStore } from '@/stores/tabsStore'
 import { ref, reactive, onMounted, computed, watch, defineProps } from 'vue'
+import { Grid, HomeFilled, List, PhoneFilled, Present, Tools, TrendCharts, UserFilled } from '@element-plus/icons-vue'
 import type { ComponentPublicInstance, Component } from 'vue'
 import type { RouteMenu } from '@/types/routers'
 import type { userStateInfo } from '@/types/stores'

@@ -3,15 +3,15 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-02 08:44:55
+ * @LastEditTime: 2025-09-02 17:45:55
 -->
 <template>
   <div class="flex h-[34px] items-center">
-    <el-icon>
+    <el-icon @click="scrollHorizontal('left')">
       <ArrowLeft />
     </el-icon>
-    <el-scrollbar :noresize="true" :always="true" class="h-full w-[95%]">
-      <div class="flex gap-2 h-full px-[10px]" @mousewheel.prevent>
+    <el-scrollbar ref="scrollbar" :noresize="true" :always="true" class="h-full scrollin-tag">
+      <div class="flex gap-2 h-full px-[15px]" @wheel="handleMouseWheel">
         <el-tag v-for="tag in tabsList" :key="tag.path" :closable="isClosable(tag.path)" :disable-transitions="true"
           :checked="true" @close="handleClose(tag)" @click="tabsStore.setActiveTab(tag.path)" :class="{
             'active-tag': tabsStore.activeTab === tag.path
@@ -20,11 +20,10 @@
         </el-tag>
       </div>
     </el-scrollbar>
-
-    <el-icon>
+    <el-icon @click="scrollHorizontal('right')">
       <ArrowRight />
     </el-icon>
-    <el-dropdown>
+    <el-dropdown class="px-[10px]">
       <el-icon color="#4073FA" class="el-icon--right">
         <Menu />
       </el-icon>
@@ -45,9 +44,12 @@
 <script setup lang='ts'>
 import { Menu, Close, ArrowLeft, ArrowRight, CircleClose, RefreshRight, FolderDelete } from '@element-plus/icons-vue'
 import { useTabsStore } from '@/stores/tabsStore'
-import { computed, type Component } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
+import type { Component } from 'vue'
+import type { ElScrollbar } from 'element-plus'
 
 const tabsStore = useTabsStore()
+const scrollbar = ref<InstanceType<typeof ElScrollbar> | null>(null)
 
 // 标签列表
 const tabsList = computed(() => {
@@ -63,6 +65,74 @@ const handleClose = (tag: { path: string; title: string }) => {
 const isClosable = (path: string): boolean => {
   return path !== '/home/backgroundawait'
 }
+
+// 获取滚动容器DOM
+const getScrollWrap = () => {
+  return scrollbar.value?.$el?.querySelector('.el-scrollbar__wrap')
+}
+
+// 左右滚动
+const scrollHorizontal = (direction: 'left' | 'right') => {
+  const wrapEl = getScrollWrap()
+  if (wrapEl) {
+    wrapEl.scrollLeft += direction === 'left' ? -100 : 100
+  }
+}
+
+// 滚动到激活标签
+const scrollToActiveTag = () => {
+  const wrapEl = getScrollWrap()
+  const activeElement = document.querySelector('.active-tag') as HTMLElement
+
+  if (!wrapEl || !activeElement) return
+
+  const containerWidth = wrapEl.clientWidth
+  const elementWidth = activeElement.offsetWidth
+  const elementLeft = activeElement.offsetLeft
+  const elementRight = elementLeft + elementWidth
+  const scrollLeft = wrapEl.scrollLeft
+  const visibleRight = scrollLeft + containerWidth
+
+  if (elementLeft >= scrollLeft && elementRight <= visibleRight) return
+
+  // 居中显示
+  wrapEl.scrollLeft = elementLeft - (containerWidth - elementWidth) / 2
+}
+
+// 滚动到底部
+const scrollToBottom = () => {
+  const wrapEl = getScrollWrap()
+  if (!wrapEl) return
+  wrapEl.scrollLeft = wrapEl.scrollWidth
+}
+
+// 鼠标滚动事件
+const handleMouseWheel = (event: WheelEvent) => {
+  const wrapEl = getScrollWrap()
+  if (!wrapEl) return
+  wrapEl.scrollLeft += event.deltaY
+}
+
+// 监听当前激活的标签页
+watch(
+  () => tabsStore.activeTab,
+  () => {
+    nextTick(scrollToActiveTag)
+  }
+)
+
+// 监听标签变化，自动滚动到底部
+watch(
+  () => tabsList.value.length,
+  () => {
+    nextTick(scrollToBottom)
+  }
+)
+
+// 页面加载后定位激活标签
+onMounted(() => {
+  nextTick(scrollToActiveTag)
+})
 
 interface MenuOptions {
   icon: Component
@@ -128,6 +198,9 @@ $mask-position: right bottom, left bottom, center top;
   z-index: 999;
 }
 
+.scrollin-tag {
+  width: calc(100% - 30px);
+}
 
 .public-tag {
   position: relative;
@@ -169,6 +242,10 @@ $mask-position: right bottom, left bottom, center top;
 }
 
 :deep(.el-scrollbar__wrap) {
-  overflow-x: hidden !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 </style>
