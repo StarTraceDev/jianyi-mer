@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-01 17:36:19
+ * @LastEditTime: 2025-09-02 08:44:55
 -->
 <template>
   <div class="flex h-[34px] items-center">
@@ -147,7 +147,7 @@ $mask-position: right bottom, left bottom, center top;
   @include tag-mask;
 }
 
-::v-deep .el-tag:hover {
+:deep(.el-tag:hover) {
   @include tag-mask;
 }
 

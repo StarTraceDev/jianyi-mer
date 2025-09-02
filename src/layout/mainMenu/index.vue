@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 11:26:10
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-01 16:01:55
+ * @LastEditTime: 2025-09-02 13:36:22
 -->
 <template>
   <div class="w-[80px] bg-[#282c34] text-white h-screen m-[5px] border-b border-[#ebeef5]">
@@ -14,8 +14,8 @@
       <div class="item" v-for="(item, index) in menuRoutes" :key="index + '-' + item.id"
         :class="{ 'active': activeIndex === index }" :ref="(el: any) => setItemRef(el, index)"
         @click="targetNavigation(item, index, 'manual')">
-        <el-icon :class="item.icon">
-          <List />
+        <el-icon :size="14" class="icon">
+          <component :is="getIconComponent(item.icon)" />
         </el-icon>
         <div class="text-[13px]">{{ item.title }}</div>
       </div>
@@ -29,11 +29,11 @@
 
 <script setup lang='ts'>
 import SubMenu from '../subMenu/index.vue'
-import { List } from '@element-plus/icons-vue'
+import { Grid, HomeFilled, List, PhoneFilled, Present, Tools, TrendCharts, UserFilled } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useTabsStore } from '@/stores/tabsStore'
 import { ref, reactive, onMounted, computed, watch, defineProps } from 'vue'
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, Component } from 'vue'
 import type { RouteMenu } from '@/types/routers'
 import type { userStateInfo } from '@/types/stores'
 
@@ -49,8 +49,27 @@ const props = defineProps({
   }
 })
 
-// 计算属性
+// 计算菜单项
 const menuRoutes = computed(() => authStore.menuRoutes as RouteMenu[])
+
+// 图标映射
+const iconMap: Record<string, Component> = {
+  's-home': HomeFilled,
+  's-order': List,
+  'present': Present,
+  's-marketing': TrendCharts,
+  'phone': PhoneFilled,
+  'user-solid': UserFilled,
+  's-grid': Grid,
+  's-finance': List,
+  's-tools': Tools
+};
+
+// 获取图标组件
+const getIconComponent = (iconName: string) => {
+  return iconMap[iconName] || null;
+};
+
 const userLogo = computed(() => {
   const info = authStore.userInfo as userStateInfo
   return info?.rectangleLogo || ''
@@ -209,6 +228,10 @@ defineOptions({ name: 'LayoutAsideNav' })
   position: relative;
   z-index: 1;
   transition: color 0.3s;
+}
+
+.icon {
+  @apply mr-[3px] inline-block;
 }
 
 .item.active {

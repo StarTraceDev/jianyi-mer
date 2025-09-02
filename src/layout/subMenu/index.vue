@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-04 13:16:56
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-01 17:02:05
+ * @LastEditTime: 2025-09-02 08:44:16
 -->
 <template>
   <div class="sub-menu">
@@ -134,11 +134,11 @@ defineOptions({ name: 'LayoutAsideNavSubmenu' })
   box-shadow: 1px 1px 4px rgba(0, 21, 41, 0.08);
 }
 
-::v-deep .el-menu {
+:deep(.el-menu) {
   border-right: none;
 }
 
-::v-deep .el-menu-item {
+:deep(.el-menu-item) {
   height: 50px;
 }
 
