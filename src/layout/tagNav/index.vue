@@ -3,15 +3,15 @@
  * @Author: StarTraceDev
  * @Date: 2025-08-05 15:57:34
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-02 17:45:55
+ * @LastEditTime: 2025-09-03 16:38:46
 -->
 <template>
   <div class="flex h-[34px] items-center">
     <el-icon @click="scrollHorizontal('left')">
       <ArrowLeft />
     </el-icon>
-    <el-scrollbar ref="scrollbar" :noresize="true" :always="true" class="h-full scrollin-tag">
-      <div class="flex gap-2 h-full px-[15px]" @wheel="handleMouseWheel">
+    <el-scrollbar ref="scrollbar" :noresize="true" :always="true" class="h-full px-[15px] scrollin-tag">
+      <div class="flex gap-2 h-full" @wheel="handleMouseWheel">
         <el-tag v-for="tag in tabsList" :key="tag.path" :closable="isClosable(tag.path)" :disable-transitions="true"
           :checked="true" @close="handleClose(tag)" @click="tabsStore.setActiveTab(tag.path)" :class="{
             'active-tag': tabsStore.activeTab === tag.path

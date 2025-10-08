@@ -3,7 +3,7 @@
  * @Author: StarTraceDev
  * @Date: 2025-07-31 08:52:13
  * @LastEditors: StarTraceDev
- * @LastEditTime: 2025-09-01 17:04:59
+ * @LastEditTime: 2025-09-03 14:41:59
  */
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
@@ -26,7 +26,7 @@ export default defineConfig({
       dts: 'src/types/auto-imports.d.ts',
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
       dts: 'src/types/components.d.ts',
     }),
     ElementPlus({
@@ -48,9 +48,7 @@ export default defineConfig({
       scss: {
         // 全局加载 SCSS 变量和混合
         // @use "@/styles/variables.scss" as *;
-        additionalData: `
-          @use "@/styles/element/index.scss" as *;
-        `,
+        additionalData: `@use "@/styles/element/index.scss" as *;`,
       },
     },
   },

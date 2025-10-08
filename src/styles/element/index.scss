@@ -1,10 +1,7 @@
-// src/styles/element/index.scss
-/* 只需重写您需要的变量 */
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
   $colors: (
     'primary': (
-      'base': #4a6cf7,
-      // 更改主色调
+      'base': #4073fa,
     ),
     'success': (
       'base': #1e9e41,
